@@ -8,6 +8,8 @@ import { AppBootstrapModule } from './app-bootstrap.module';
 import { AppAngularMaterialModule } from './app-angular-material.module';
 
 import { TableCellComponent } from './components/table-cell/table-cell.component';
+import { TableRowComponent } from './components/table-row/table-row.component';
+import { TableComponent } from './components/table/table.component';
 
 // import { MatButtonModule } from '@angular/material/button';
 
@@ -16,14 +18,15 @@ import { TableCellComponent } from './components/table-cell/table-cell.component
   declarations: [
     AppComponent,
     // the components added to /app/components
-    TableCellComponent
+    TableCellComponent,
+    TableRowComponent,
+    TableComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     AppBootstrapModule,
     AppAngularMaterialModule
-    // MatButtonModule       // here
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,6 +1,6 @@
 <div>
-  <div *ngIf=displayValue>I am a value
-    {{cellType}}
+  <div *ngIf=displayValue>
+    {{cellDisplayValue}}
   </div>
 
   <div *ngIf=displayCheckbox>
@@ -12,7 +12,8 @@
       <button mat-button (click)="onClickButton($event, cellType)">Click button here</button>
   </div>
 
-  <div *ngIf=displayLink>I am a link
-      <a href="https://github.com/angular/angular-cli/wiki">Download</a>
+  <div *ngIf=displayLink>
+      <!-- <a href="https://github.com/angular/angular-cli/wiki">Download</a> -->
+      <a href="{{cellDisplayValue}}">Download</a>
   </div>
 </div>

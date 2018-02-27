@@ -1,5 +1,6 @@
 // import { Component, OnInit } from '@angular/core';
 import {Component, OnInit, Input, Output, EventEmitter, ViewChild} from '@angular/core';
+import {CellConfiguration, CELL_TYPE} from '../../libraries/CellConfiguration';
 
 @Component({
   selector: 'app-table-cell',
@@ -12,11 +13,19 @@ export class TableCellComponent implements OnInit {
   public cellType: string;
    // public mediumOptions: SelectionValueIcon<string>[];
 
-  private displayValue: boolean;
-  private displayCheckbox: boolean;
-  private displayButton: boolean;
-  private displayLink: boolean;
-  private checkModel: any = { left: false, middle: true, right: false };
+   @Input()
+   public cellDisplayValue: any;    // string number, enum, url, double...
+
+  //  @Input()
+  //  public theFunction: Function;
+   @Output()
+   callbackFunction: EventEmitter<any> = new EventEmitter();
+
+  private displayValue = false;
+  private displayCheckbox = false;
+  private displayButton = false;
+  private displayLink = false;
+  // private checkModel: any = { left: false, middle: true, right: false };
 
   constructor() {
   }
@@ -25,26 +34,20 @@ export class TableCellComponent implements OnInit {
     this.getDisplay(this.cellType);
   }
 
-  // private getDisplay(celltype: string): boolean {
   private getDisplay(celltype: string): void {
-    this.displayValue = false;
-    this.displayCheckbox = false;
-    this.displayButton = false;
-    this.displayLink = false;
 
-    if (celltype === 'value') {
+    if (celltype === CELL_TYPE.value) {
       this.displayValue = true;
     }
-    if (celltype === 'checkbox') {
+    if (celltype === CELL_TYPE.checkbox) {
       this.displayCheckbox = true;
     }
-    if (celltype === 'button') {
+    if (celltype === CELL_TYPE.button) {
       this.displayButton = true;
     }
-    if (celltype === 'link') {
+    if (celltype === CELL_TYPE.anchor) {
       this.displayLink = true;
     }
-    // return true;
   }
 
   private onClickCheckBox(event: any, me: any): void {
@@ -55,8 +58,15 @@ export class TableCellComponent implements OnInit {
 
   private onClickButton(event: any, me: any): void {
     console.log('hello from button');
-    console.log(event);
-    console.log(me);
+    // console.log(event);
+    // console.log(me);
+
+    // test callback function acting on parent passing the object from the child
+    const obj = {
+      name: 'Francesca',
+      surnae: 'bertoncelli'
+    };
+    this.callbackFunction.emit(obj);
   }
 }
 
@@ -70,3 +80,6 @@ export class TableCellComponent implements OnInit {
 // notes:
 // prebuilt style imported in style.css for angular/materials -  https://github.com/angular/material2/issues/4455
 // https://material.angular.io/components/checkbox/overview
+// call back function with Emitter as Output in the child coponet to the parent
+// https://toddmotto.com/component-events-event-emitter-output-angular-2
+// https://stackoverflow.com/questions/35328652/angular-pass-callback-function-to-child-component-as-input

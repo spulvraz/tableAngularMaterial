@@ -4,8 +4,13 @@
     <h3 class="col-sm-6"> Building table celles</h3>
   </div>
   <div class="row">
-      <app-table-cell cellType='button'></app-table-cell>
+      <app-table-cell cellType="{{ cellElement }}" cellDisplayValue="{{ cellValue }}"  (callbackFunction)="myFunction($event)"></app-table-cell>
   </div>
+
+  <div class="row">
+      <app-table></app-table>
+  </div>
+  
   <div class="row">
       <div class="btn-group " dropdown>
           <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
