@@ -1,0 +1,18 @@
+<div>
+  <div *ngIf=displayValue>I am a value
+    {{cellType}}
+  </div>
+
+  <div *ngIf=displayCheckbox>
+      <mat-checkbox (click)="onClickCheckBox($event, cellType)">Check me!</mat-checkbox>
+      <!-- <input type="checkbox" name="checkReminder" data-field="id" value="hello" (click)="onClickCheckBox($event, cellType)"/> -->
+  </div>
+
+  <div *ngIf=displayButton>
+      <button mat-button (click)="onClickButton($event, cellType)">Click button here</button>
+  </div>
+
+  <div *ngIf=displayLink>I am a link
+      <a href="https://github.com/angular/angular-cli/wiki">Download</a>
+  </div>
+</div>
