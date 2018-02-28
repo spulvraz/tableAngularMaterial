@@ -10,9 +10,9 @@ import { AppAngularMaterialModule } from './app-angular-material.module';
 import { TableCellComponent } from './components/table-cell/table-cell.component';
 import { TableRowComponent } from './components/table-row/table-row.component';
 import { TableComponent } from './components/table/table.component';
+import { TableOverviewComponent } from './components/table-overview/table-overview.component';
 
 // import { MatButtonModule } from '@angular/material/button';
-
 
 @NgModule({
   declarations: [
@@ -20,7 +20,8 @@ import { TableComponent } from './components/table/table.component';
     // the components added to /app/components
     TableCellComponent,
     TableRowComponent,
-    TableComponent
+    TableComponent,
+    TableOverviewComponent
   ],
   imports: [
     BrowserModule,

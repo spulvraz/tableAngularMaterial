@@ -4,12 +4,12 @@
   </div>
 
   <div *ngIf=displayCheckbox>
-      <mat-checkbox (click)="onClickCheckBox($event, cellType)">Check me!</mat-checkbox>
+      <mat-checkbox (click)="onClickCheckBox($event, cellType)"></mat-checkbox>
       <!-- <input type="checkbox" name="checkReminder" data-field="id" value="hello" (click)="onClickCheckBox($event, cellType)"/> -->
   </div>
 
   <div *ngIf=displayButton>
-      <button mat-button (click)="onClickButton($event, cellType)">Click button here</button>
+      <button mat-button (click)="onClickButton($event, cellType)">Action</button>
   </div>
 
   <div *ngIf=displayLink>

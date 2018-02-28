@@ -1,0 +1,25 @@
+.hide-column-and-cells{
+    display: none;
+};
+
+.sent{
+    color: orange !important;
+};
+
+.signed{
+    color: green;   
+};
+/* enable hiding column and element */
+/* <ng-container matColumnDef="Id">
+    <mat-header-cell [ngClass]="{'hide-column-and-cells': true }"  *matHeaderCellDef>-</mat-header-cell>
+    <mat-cell [ngClass]="{'hide-column-and-cells': true }" *matCellDef="let element"> {{element.Id}} </mat-cell>
+</ng-container> */
+
+
+/* .mat-header-cell.cdk-column-Id.mat-column-Id{
+    display: none;
+}
+
+.mat-cell.cdk-column-Id.mat-column-Id{
+    display: none;
+} */

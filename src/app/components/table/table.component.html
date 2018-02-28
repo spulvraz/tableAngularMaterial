@@ -5,8 +5,9 @@
             The actual rendered columns are set as a property on the row definition" -->
   
       <!-- Position Column -->
-      <ng-container matColumnDef="position">
-        <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+      <!-- <ng-container matColumnDef="position"> -->
+      <ng-container matColumnDef={{displayedColumns[0]}}>
+        <mat-header-cell *matHeaderCellDef> {{displayedColumns[0]}} NO.</mat-header-cell>
         <mat-cell *matCellDef="let element"> {{element.position}} </mat-cell>
       </ng-container>
   

@@ -1,17 +1,23 @@
 <div class="container">
   <div class="row">
-    <h3 class="col-sm-6">This is a test</h3>
-    <h3 class="col-sm-6"> Building table celles</h3>
-  </div>
-  <div class="row">
-      <app-table-cell cellType="{{ cellElement }}" cellDisplayValue="{{ cellValue }}"  (callbackFunction)="myFunction($event)"></app-table-cell>
-  </div>
+    <h4 class="col-sm-6">This is a table using angular material</h4>
+    <h6 class="col-sm-12"> Building table overview</h6>
+    <div class="col-sm-12">
+      <app-table-overview></app-table-overview>
+    </div>
 
-  <div class="row">
+    <!-- <h6 class="col-sm-12"> Simple test</h6>
+    <div class="col-sm-12">
       <app-table></app-table>
+    </div> -->
+
   </div>
-  
-  <div class="row">
+  <!-- <div class="row">
+      <app-table-cell cellType="{{ cellElement }}" cellDisplayValue="{{ cellValue }}"  (callbackFunction)="myFunction($event)"></app-table-cell>
+  </div> -->
+</div>
+
+  <!-- <div class="row">
       <div class="btn-group " dropdown>
           <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
             Button dropdown <span class="caret"></span>
@@ -44,8 +50,7 @@
         </div>
         <button type="button" class="btn btn-primary" (click)="toggleDropdown($event)">Toggle</button>
     
-    </div>
-  </div>
+    </div> -->
 
   <!-- <h2>Basic Table</h2>
   <p>The .table class adds basic styling (light padding and horizontal dividers) to a table:</p>            

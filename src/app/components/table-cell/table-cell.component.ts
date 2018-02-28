@@ -52,8 +52,9 @@ export class TableCellComponent implements OnInit {
 
   private onClickCheckBox(event: any, me: any): void {
     console.log('hello from checkbox');
-    console.log(event);
-    console.log(me);
+    // console.log(event);
+    // console.log(me);
+    this.callbackFunction.emit();
   }
 
   private onClickButton(event: any, me: any): void {
@@ -66,7 +67,8 @@ export class TableCellComponent implements OnInit {
       name: 'Francesca',
       surnae: 'bertoncelli'
     };
-    this.callbackFunction.emit(obj);
+    // this.callbackFunction.emit(obj);
+    this.callbackFunction.emit();
   }
 }
 
