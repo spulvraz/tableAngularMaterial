@@ -1,7 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {CommonModule} from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { AppBootstrapModule } from './app-bootstrap.module';
@@ -24,8 +25,11 @@ import { TableOverviewComponent } from './components/table-overview/table-overvi
     TableOverviewComponent
   ],
   imports: [
+    // NgModule,       // ????
     BrowserModule,
     FormsModule,
+    BrowserAnimationsModule,
+    CommonModule,
     AppBootstrapModule,
     AppAngularMaterialModule
   ],

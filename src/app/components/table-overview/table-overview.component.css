@@ -2,13 +2,14 @@
     display: none;
 };
 
-.sent{
+/* .sent{
     color: orange !important;
 };
 
 .signed{
     color: green;   
-};
+}; */
+
 /* enable hiding column and element */
 /* <ng-container matColumnDef="Id">
     <mat-header-cell [ngClass]="{'hide-column-and-cells': true }"  *matHeaderCellDef>-</mat-header-cell>

@@ -1,5 +1,20 @@
-import {Component, OnInit, Input, Output, EventEmitter, ViewChild, Directive, AfterViewInit, ElementRef} from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter, ViewChild, Directive, AfterViewInit, ElementRef, Renderer} from '@angular/core';
 import {CellConfiguration, CELL_TYPE} from '../../libraries/CellConfiguration';
+
+import {MatPaginator, MatSort} from '@angular/material';
+import {SelectionModel} from '@angular/cdk/collections';
+import {FormControl} from '@angular/forms';
+import {DataSource} from '@angular/cdk/collections';
+import {CdkTableModule} from '@angular/cdk/table';    // ?
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/operator/startWith';
+import 'rxjs/add/observable/merge';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/observable/combineLatest';
+import 'rxjs/add/observable/fromEvent';
 
 @Component({
   selector: 'app-table-overview',
@@ -7,10 +22,30 @@ import {CellConfiguration, CELL_TYPE} from '../../libraries/CellConfiguration';
   styleUrls: ['./table-overview.component.css']
 })
 export class TableOverviewComponent implements OnInit {
-  // tslint:disable-next-line:max-line-length
-  displayedColumns = ['Id', 'PackageId', 'Email', 'Firstname', 'Lastname', 'DateTimeCreated', 'DateTimeSigned', 'SignedDocumentUrl', 'AuditUrl', 'Status'];
-  dataSourceOverview = TEST_OVERVIEW_DATA;
-  isOk = true;
+
+  displayedColumns = ['Id', 'PackageId', 'Email', 'Firstname', 'Lastname', 'DateTimeCreated',
+  'DateTimeSigned', 'SignedDocumentUrl', 'AuditUrl', 'Status'];
+
+  // dataSourceOverview = TEST_OVERVIEW_DATA;     // old
+  exampleDatabase = new ExampleDatabase();
+  selection = new SelectionModel<string>(true, []);
+  dataSourceOverview: ExampleDataSource | null;
+
+  public setColor(element) {
+    switch (element.Status) {
+      case ('Sent'):
+      return COLORS.orange;
+      case ('Signed'):
+      return COLORS.green;
+      default:
+      return COLORS.default;
+    }
+  }
+
+  public hideColumn(): boolean {
+    // some logic - now hidden e-mail
+    return true;
+  }
 
   public callbackCheckBox(event: any, overview: any): void {
     console.log('checkbox');
@@ -27,97 +62,100 @@ export class TableOverviewComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-  }
+      this.dataSourceOverview = new ExampleDataSource(this.exampleDatabase);
+    }
 }
-
-@Directive({
-  // tslint:disable-next-line:directive-selector
-  selector: '[showCoulmn]'
-})
-export class ShowColumnDirective implements AfterViewInit {
-  @Input() showInput: string;
-  constructor(private elRef: ElementRef) {
-  }
-  ngAfterViewInit(): void {
-    console.log(this.showInput);
-  this.elRef.nativeElement.style.display = this.showInput;
- }
-}
-
-// // create constant with 2 arrays: 1) calculated for the column placeholder 2) for the header placeholder
-// export const displayedColumns = ['position', 'name', 'weight', 'symbol'];
-
-
-// // rowItem
-// export interface Element {
-//   // data: {
-//   //   name: string;
-//   //   position: number;
-//   //   weight: number;
-//   //   symbol: string;
-//   // };
-//   // metadata: {
-//   //   // cellType="{{ cellElement }}" cellDisplayValue="{{ cellValue }}"  (callbackFunction)= all imput values and output
-//   //   patat: string
-//   // };
-
-//   name: {
-//     data: string,
-//     metadata: {
-//       cellElement: string,    // cellType: string value, button, checkbox, url...
-//       cellValue?: any,        // cellDisplayValue content of the cellule in term of value or URL
-//       myFunction?: Function   // callbackFunction
-//     }
-//   };
-//   // position: {}; etc
-// }
-
-// const ELEMENT_DATA: Element[] = [
-//   // {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'}
-// ];
 
 export interface OverviewData {
   Id:	number;
-  PackageId:	string;			        // "33045835-ed12-447c-bf33-09750431add2"
-  Email: string;					        // "x.x@stage.com"
+  PackageId: string;
+  Email: string;
   Firstname: string;
   Lastname:	string;
-  DateTimeCreated: string;		    // "2018-02-21T14:10:34"
+  DateTimeCreated: string;		      // "2018-02-21T14:10:34"
   DateTimeSigned?: string;
   SignedDocumentUrl?:	string;
   AuditUrl?: string;
-  Status: string;					        // "Sent"
+  Status: string;
 }
 
 const TEST_OVERVIEW_DATA: OverviewData[] = [
-// tslint:disable:max-line-length
-  {Id: 1, PackageId: '1bJJJ', Email: 'xy@sii.be', Firstname: 'Carmela', Lastname: 'Soprano', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: null, SignedDocumentUrl: null, AuditUrl: null, Status: 'Sent'},
-  {Id: 2, PackageId: '1bf8aGGC', Email: 'xy@sii.be', Firstname: 'Viktor',  Lastname: 'Stain', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://angular.io/tutorial', AuditUrl: 'https://angular.io/tutorial', Status: 'Signed'},
-  {Id: 3, PackageId: '1bf8ahh', Email: 'xy@sii.be', Firstname: 'Rosemary', Lastname: 'Schuller', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://angular.io/tutorial', AuditUrl: 'https://angular.io/tutorial', Status: 'Signed'},
-  {Id: 4, PackageId: '1bf8sbf', Email: 'xy@sii.be', Firstname: 'Petra', Lastname: 'Vratilova', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: null, SignedDocumentUrl: null, AuditUrl: null, Status: 'Sent'}
-  // tslint:disable:max-line-length
-  // {Id: 0, PackageId: '1bf8a76a', Email: 'xy@sii.be', Firstname: 'Antony', Lastname: 'Soprano', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'},
-  // {Id: 1, PackageId: '1bJJJ', Email: 'xy@sii.be', Firstname: 'Carmela', Lastname: 'Soprano', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: null, SignedDocumentUrl: null, AuditUrl: null, Status: 'Sent'},
-  // {Id: 2, PackageId: '1bf8aGGC', Email: 'xy@sii.be', Firstname: 'Viktor', Lastname: 'Stain', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'},
-  // {Id: 3, PackageId: '1bf8ahh', Email: 'xy@sii.be', Firstname: 'Rosemary', Lastname: 'Schuller', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'},
-  // {Id: 4, PackageId: '1bf8sbf', Email: 'xy@sii.be', Firstname: 'Petra', Lastname: 'Vratilova', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: null, SignedDocumentUrl: null, AuditUrl: null, Status: 'Sent'}
-  // {Id: 5, PackageId: '1bfxza76a', Email: 'xy@sii.be', Firstname: 'Marco', Lastname: 'Marzio', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'},
-  // {Id: 6, PackageId: 'aee6a', Email: 'xy@sii.be', Firstname: 'Ugo', Lastname: 'Le Compte', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'},
-  // {Id: 7, PackageId: '1bxsfrt76a', Email: 'xy@sii.be', Firstname: 'Manuel', Lastname: 'Garroso', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: null, SignedDocumentUrl: null, AuditUrl: null, Status: 'Sent'},
-  // {Id: 8, PackageId: '1bfregr6a', Email: 'xy@sii.be', Firstname: 'Paul', Lastname: 'Soteby', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'},
-  // {Id: 9, PackageId: '1bxafer6a', Email: 'xy@sii.be', Firstname: 'Selma', Lastname: 'Valle', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'},
-  // {Id: 10, PackageId: '1bazar76a', Email: 'xy@sii.be', Firstname: 'Samantha', Lastname: 'Price', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: null, SignedDocumentUrl: null, AuditUrl: null, Status: 'Sent'},
-  // {Id: 11, PackageId: '1bnsjhd76a', Email: 'xy@sii.be', Firstname: 'Tessa', Lastname: 'Anders', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'},
-  // {Id: 12, PackageId: '1bfhhhe76a', Email: 'xy@sii.be', Firstname: 'Cloe', Lastname: 'De Mauris', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'},
-  // {Id: 13, PackageId: '1bhhdz76a', Email: 'xy@sii.be', Firstname: 'Antony', Lastname: 'Soprano', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: null, SignedDocumentUrl: null, AuditUrl: null, Status: 'Sent'},
-  // {Id: 14, PackageId: '1czrfe76a', Email: 'xy@sii.be', Firstname: 'Alex', Lastname: 'Porter', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'},
-  // {Id: 15, PackageId: '1bfjzay76a', Email: 'xy@sii.be', Firstname: 'Robert', Lastname: 'Smile', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'},
-  // {Id: 16, PackageId: '1bzfa76a', Email: 'xy@sii.be', Firstname: 'Ulrich', Lastname: 'Thomson', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'},
-  // {Id: 17, PackageId: '1bf8dze6a', Email: 'xy@sii.be', Firstname: 'Eric', Lastname: 'Santander', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'},
-  // {Id: 18, PackageId: '1bf8klfz6a', Email: 'xy@sii.be', Firstname: 'Patricia', Lastname: 'Moore', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'},
-  // {Id: 19, PackageId: '1bcrezga76a', Email: 'xy@sii.be', Firstname: 'Barbara', Lastname: 'Seller', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'},
-  // {Id: 20, PackageId: 'fegz8a76a', Email: 'xy@sii.be', Firstname: 'Patrick', Lastname: 'Vos', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'},
-  // {Id: 22, PackageId: '1bfmoej76a', Email: 'xy@sii.be', Firstname: 'Tyler', Lastname: 'BoB', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'},
-  // {Id: 23, PackageId: '1cretha76a', Email: 'xy@sii.be', Firstname: 'Steven', Lastname: 'Sob', DateTimeCreated: '2018-02-21T07:58:34', DateTimeSigned: '2018-02-21T07:59:31', SignedDocumentUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/signed_20180221065932_TestDocument2.pdf', AuditUrl: 'https://digisiignstore.blob.core.windows.net/1bf8a76a-8da9-4e09-a20f-693408fb7f35/AuditSummary_20180221065933.pdf', Status: 'Signed'}
+  {Id: 1, PackageId: '1bJJJ', Email: 'xy@sii.be', Firstname: 'Carmela', Lastname: 'Soprano',
+    DateTimeCreated: new Date('2018-02-20T07:58:34').toDateString(), DateTimeSigned: null, AuditUrl: null, Status: 'Sent'},
+
+  {Id: 2, PackageId: '1bf8aGGC', Email: 'xy@sii.be', Firstname: 'Viktor',  Lastname: 'Stain',
+  DateTimeCreated: new Date('2018-02-22T07:58:34').toLocaleDateString(),
+  DateTimeSigned: new Date('2018-02-25T07:59:31').toLocaleDateString(),
+  SignedDocumentUrl: 'https://angular.io/tutorial', AuditUrl: 'https://angular.io/tutorial', Status: 'Signed'},
+
+  {Id: 3, PackageId: '1bf8ahh', Email: 'xy@sii.be', Firstname: 'Rosemary', Lastname: 'Schuller',
+  DateTimeCreated: new Date('2018-02-23T07:58:34').toLocaleDateString(),
+  DateTimeSigned: new Date('2018-02-28T07:59:31').toLocaleDateString(), SignedDocumentUrl: 'https://angular.io/tutorial',
+  AuditUrl: 'https://angular.io/tutorial', Status: 'Signed'},
+
+  {Id: 4, PackageId: '1bf8sbf', Email: 'xy@sii.be', Firstname: 'Petra',
+  Lastname: 'Vratilova', DateTimeCreated: new Date('2018-02-24T07:58:34').toLocaleDateString(),
+  DateTimeSigned: null, SignedDocumentUrl: null, AuditUrl: null, Status: 'Sent'}
 ];
 
+// todo map colours to status columns for dynamic colours
+// const COLORS = ['maroon', 'red', 'orange', 'yellow', 'olive', 'green', 'purple',
+//   'fuchsia', 'lime', 'teal', 'aqua', 'blue', 'navy', 'black', 'gray'];
+const COLORS = {
+  orange: 'orange',
+  green: 'green',
+  default: 'black',
+  red: 'red'};
+
+// https://github.com/angular/material2/issues/6178
+// https://plnkr.co/edit/oQOYQgW0vCx8tfAgb1w9?p=preview
+// database creation
+
+/** An example database that the data source uses to retrieve data for the table. */
+export class ExampleDatabase {
+  /** Stream that emits whenever the data has been modified. */
+  dataChange: BehaviorSubject<OverviewData[]> = new BehaviorSubject<OverviewData[]>([]);
+  get data(): OverviewData[] { return this.dataChange.value; }
+
+  constructor() {
+    // Fill up the database with overview rows.
+    for (let i = 0, len = TEST_OVERVIEW_DATA.length; i < len; i++) {
+      this.addOverview(TEST_OVERVIEW_DATA[i]);
+    }
+  }
+
+  /** Adds a new addOverview to the database. */
+  addOverview(row) {
+    const copiedData = this.data.slice();
+    copiedData.push(row);
+    this.dataChange.next(copiedData);
+  }
+}
+
+/**
+ * Data source to provide what data should be rendered in the table. Note that the data source
+ * can retrieve its data in any way. In this case, the data source is provided a reference
+ * to a common data base, ExampleDatabase. It is not the data source's responsibility to manage
+ * the underlying data. Instead, it only needs to take the data and send the table exactly what
+ * should be rendered.
+ */
+export class ExampleDataSource extends DataSource<any> {
+
+  constructor(private _exampleDatabase: ExampleDatabase) {
+    super();
+  }
+
+  /** Connect function called by the table to retrieve one stream containing the data to render. */
+  connect(): Observable<OverviewData[]> {
+    const displayDataChanges = [
+      this._exampleDatabase.dataChange
+      // add filter, paginator, sorting
+    ];
+
+    return Observable.merge(...displayDataChanges).map(() => {
+      return this._exampleDatabase.data.slice();
+    });
+  }
+
+  disconnect() {}
+}

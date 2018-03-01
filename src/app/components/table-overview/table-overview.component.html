@@ -2,6 +2,7 @@
   table-overview works!
 </p>
 <div class="example-container mat-elevation-z8">
+
   <mat-table #table [dataSource]="dataSourceOverview">
 
     <!--- Note that these columns can be defined in any order.
@@ -26,10 +27,15 @@
         </mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="Email">
+    <!-- <ng-container matColumnDef="Email">
           <mat-header-cell [ngClass]="{'hide-column-and-cells': true }" *matHeaderCellDef> E-mail</mat-header-cell>
           <mat-cell [ngClass]="{'hide-column-and-cells': true }" *matCellDef="let element"> {{element.Email}} </mat-cell>
-    </ng-container>
+    </ng-container> -->
+
+    <ng-container matColumnDef="Email">
+        <mat-header-cell [ngClass]="{'hide-column-and-cells': hideColumn() }" *matHeaderCellDef> E-mail</mat-header-cell>
+        <mat-cell [ngClass]="{'hide-column-and-cells': hideColumn() }" *matCellDef="let element"> {{element.Email}} </mat-cell>
+  </ng-container>
 
     <ng-container matColumnDef="Firstname">
         <mat-header-cell *matHeaderCellDef> Firstname</mat-header-cell>
@@ -75,11 +81,13 @@
       <ng-container matColumnDef="Status">
           <mat-header-cell *matHeaderCellDef> Status</mat-header-cell>
           <mat-cell *matCellDef="let element"> 
-            <div [ngClass]="{'sent': true}">{{element.Status}} </div>
+            <!-- <div [style.color]="'green'">{{element.Status}} </div> -->
+            <div [style.color]="setColor(element)">{{element.Status}} </div>
           </mat-cell>
-        </ng-container>
+      </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
+
 </div>
